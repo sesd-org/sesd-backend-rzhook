@@ -9,7 +9,7 @@ var cors = require("cors");
 const PORT = process.env.PORT || 3000;
 
 import { createClient } from "@supabase/supabase-js";
-import { log } from "console";
+
 const supabase = createClient(
   "https://bjxlpxvlgsooqyqmqodd.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqeGxweHZsZ3Nvb3F5cW1xb2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIyMTIxOTAsImV4cCI6MjAxNzc4ODE5MH0.VteIMWduAPGM6BS-u0xP_-0eGFL5x5HqssZtCrDbD7c"
@@ -55,7 +55,7 @@ app.post("/rzhook", async (req, res) => {
         //TODO: Check member is Not Available then Create It
         console.log("Adding membership to database");
         await supabase.from("members").insert({
-          name: memberInfo["email"],
+          name: memberInfo["name"],
           sub: memberInfo["membership"],
           email: memberInfo["email"],
           phone: memberInfo["phone"],
@@ -103,10 +103,10 @@ app.post("/rzhook", async (req, res) => {
     }
     console.log("Memberdata From Request");
     console.log(memberInfo);
-    res.status(200).json({ success: true }).end();
+    res.sendStatus(200);
   } catch (e) {
     console.log(e);
-    res.status(200).json({ success: false }).end();
+    res.sendStatus(500);
   }
 });
 
