@@ -110,6 +110,45 @@ app.post("/rzhook", async (req, res) => {
   }
 });
 
+//>>>>>>>>>>>>> For Mailing <<<<<<<<<<<<<<//\
+
+const nodemailer = require("nodemailer");
+
+const host = "mail.sesdorg.com";
+const username = "admin@sesdorg.com";
+const password = "Hanumant22*";
+
+const transporter = nodemailer.createTransport({
+  host: host,
+  port: 465,
+  secure: true,
+  auth: {
+    user: username,
+    pass: password,
+  },
+});
+
+app.post("/sendmail", async (req, res) => {
+  const mailList = req.body["mailList"];
+  const subject = req.body["subject"];
+  const mailText = req.body["mailText"];
+  try {
+    mailList.forEach(async (mail) => {
+      const info = await transporter.sendMail({
+        from: '"SESD ORG" <admin@sesdorg.com>', // sender address
+        to: mail, // list of receivers
+        subject: subject, // Subject line
+        text: mailText, // plain text body
+      });
+      console.log("Mail sent: %s", info.messageId);
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}!`);
 });
