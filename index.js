@@ -133,17 +133,19 @@ app.post("/sendmail", async (req, res) => {
   const mailList = req.body["mailList"];
   const subject = req.body["subject"];
   const mailText = req.body["mailText"];
+  var messageId = [];
   try {
-    mailList.forEach(async (mail) => {
+    for (let mail of mailList) {
       const info = await transporter.sendMail({
         from: '"SESD ORG" <admin@sesdorg.com>', // sender address
         to: mail, // list of receivers
         subject: subject, // Subject line
         text: mailText, // plain text body
       });
+      messageId.push(info.messageId);
       console.log("Mail sent: %s", info.messageId);
-    });
-    res.sendStatus(200);
+    }
+    res.status(200).json({ messageId: messageId });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
