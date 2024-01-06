@@ -133,7 +133,7 @@ app.post("/sendmail", async (req, res) => {
   const subject = req.body["subject"];
   const mailText = req.body["mailText"];
   try {
-    mailList.forEach(async (mail) => {
+    mailList.map(async (mail) => {
       const info = await transporter.sendMail({
         from: '"SESD ORG" <admin@sesdorg.com>', // sender address
         to: mail, // list of receivers
