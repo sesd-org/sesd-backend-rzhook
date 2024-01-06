@@ -119,6 +119,7 @@ const username = "admin@sesdorg.com";
 const password = "Hanumant22*";
 
 const transporter = nodemailer.createTransport({
+  name: "sesdorg.com",
   host: host,
   port: 465,
   secure: true,
@@ -133,7 +134,7 @@ app.post("/sendmail", async (req, res) => {
   const subject = req.body["subject"];
   const mailText = req.body["mailText"];
   try {
-    mailList.map(async (mail) => {
+    mailList.forEach(async (mail) => {
       const info = await transporter.sendMail({
         from: '"SESD ORG" <admin@sesdorg.com>', // sender address
         to: mail, // list of receivers
