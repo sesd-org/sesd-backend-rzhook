@@ -9,6 +9,7 @@ var cors = require("cors");
 const PORT = process.env.PORT || 3000;
 
 import { createClient } from "@supabase/supabase-js";
+import { log } from "console";
 
 const supabase = createClient(
   "https://bjxlpxvlgsooqyqmqodd.supabase.co",
@@ -18,6 +19,7 @@ const supabase = createClient(
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -148,6 +150,35 @@ app.post("/sendmail", async (req, res) => {
     res.status(200).json({ messageId: messageId });
   } catch (err) {
     console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+//>>>>>>>>>>>>>>>> For Free Membership <<<<<<<//
+app.post("/freesub", async (req, res) => {
+  const date = new Date();
+  const endDate = date.setDate(date.getDate() + 10000);
+  try {
+    const { data: memberData, err } = await supabase
+      .from("members")
+      .select("*")
+      .eq("email", req.body["Email"])
+      .single();
+    if (memberData === null) {
+      const { data: newData, err } = await supabase.from("members").insert({
+        name: req.body["Name"],
+        sub: "Free",
+        email: req.body["Email"],
+        phone: req.body["Phone"],
+        addr: "N/A",
+        subend: new Date(endDate).toISOString(),
+      });
+    } else {
+      console.log("Member is Already Registerd!");
+    }
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 });
